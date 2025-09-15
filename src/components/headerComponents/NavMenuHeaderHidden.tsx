@@ -8,28 +8,32 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { UserRound } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 
-export default function NavMenuHeaderProfile() {
+export default function NavMenuHeaderHidden() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="flex md:hidden" orientation="vertical">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <UserRound className="h-6 w-6" />
+            <Menu className="h-6 w-6 hover:scale-110" />
           </NavigationMenuTrigger>
 
           <NavigationMenuContent>
             <NavigationMenuLink asChild>
-              <Link href="/purchased">Purchases</Link>
+              <Link href="/">HOME</Link>
             </NavigationMenuLink>
             <NavigationMenuLink asChild>
-              <Link href="/">Logout</Link>
+              <Link href="/collection">COLLECTION</Link>
             </NavigationMenuLink>
 
             <NavigationMenuLink asChild>
-              <Link href="/login">Login</Link>
+              <Link href="/about">ABOUT</Link>
+            </NavigationMenuLink>
+
+            <NavigationMenuLink asChild>
+              <Link href="/contact">CONTACT</Link>
             </NavigationMenuLink>
           </NavigationMenuContent>
         </NavigationMenuItem>

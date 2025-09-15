@@ -1,19 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "../ui/buttonHeader";
-import { Search, Menu } from "lucide-react";
+import { Search } from "lucide-react";
 import Image from "next/image";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
 import NavMenuHeaderProfile from "./NavMenuHeaderProfile";
+import NavMenuHeaderHidden from "./NavMenuHeaderHidden";
 
 export default function Header() {
   return (
@@ -72,32 +63,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <NavigationMenu className="flex md:hidden" orientation="vertical">
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>
-                <Menu className="h-6 w-6 hover:scale-110" />
-              </NavigationMenuTrigger>
-
-              <NavigationMenuContent>
-                <NavigationMenuLink asChild>
-                  <Link href="/">HOME</Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link href="/collection">COLLECTION</Link>
-                </NavigationMenuLink>
-
-                <NavigationMenuLink asChild>
-                  <Link href="/about">ABOUT</Link>
-                </NavigationMenuLink>
-
-                <NavigationMenuLink asChild>
-                  <Link href="/contact">CONTACT</Link>
-                </NavigationMenuLink>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        <NavMenuHeaderHidden />
       </div>
     </div>
   );
