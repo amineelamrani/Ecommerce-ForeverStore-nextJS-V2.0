@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import NavMenuHeaderProfile from "./NavMenuHeaderProfile";
 import NavMenuHeaderHidden from "./NavMenuHeaderHidden";
+import ButtonPathnamePerson from "./ButtonPathnamePerson";
 
 export default function Header() {
   return (
@@ -14,26 +15,11 @@ export default function Header() {
       </h1>
 
       <div className="hidden md:flex items-center justify-between gap-5">
-        <Link href="/">
-          <Button className="relative w-full after:content-[''] after:absolute after:top-7 after:mx-auto after:w-1/2 after:h-[2px] after:bg-black">
-            HOME
-          </Button>
-        </Link>
-        <Link href="/collection">
-          <Button className="relative w-full after:content-[''] after:absolute after:top-7 after:mx-auto after:w-1/2 after:h-[2px] after:bg-black">
-            COLLECTION
-          </Button>
-        </Link>
-        <Link href="/about">
-          <Button className="relative w-full after:content-[''] after:absolute after:top-7 after:mx-auto after:w-1/2 after:h-[2px] after:bg-black">
-            ABOUT
-          </Button>
-        </Link>
-        <Link href="/contact">
-          <Button className="relative w-full after:content-[''] after:absolute after:top-7 after:mx-auto after:w-1/2 after:h-[2px] after:bg-black">
-            CONTACT
-          </Button>
-        </Link>
+        <ButtonPathnamePerson to="/" page="HOME" />
+        <ButtonPathnamePerson to="/collection" page="COLLECTION" />
+        <ButtonPathnamePerson to="/about" page="ABOUT" />
+        <ButtonPathnamePerson to="/contact" page="CONTACT" />
+
         <Link href="/admin">
           <Button variant="outline" className="px-5 rounded-full">
             AdminPanel
