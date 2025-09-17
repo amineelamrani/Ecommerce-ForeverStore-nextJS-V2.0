@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 
-interface FavouriteInterface {
+export interface FavouriteInterface {
   product: mongoose.Schema.Types.ObjectId;
   size: string;
 }
