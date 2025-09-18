@@ -70,6 +70,7 @@ export default async function Home() {
 
   return (
     <div className="w-full h-full flex items-center flex-col gap-14">
+      {/* When one of the fetched variables in unstable_cache returned a null then display the toast error : but to keep in mind as those would be ISR so maybe a revalidatepath that would help better than a refresh */}
       <HomePageCarousel collections={carouselCollection} />
       <LatestCollectionSection collections={latestCollections} />
       <BestSellersSection collections={bestSellersCollections} />
