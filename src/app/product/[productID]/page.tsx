@@ -53,7 +53,10 @@ export default async function ProductPage({
             />
           </div>
 
-          <TabDescriptionAndReviewsSection productID={productID} />
+          <TabDescriptionAndReviewsSection
+            productID={productID}
+            title={fetchedProduct.title}
+          />
           <RelatedProductsSection
             category={fetchedProduct.category[0]}
             subCategory={fetchedProduct.subCategory[0]}

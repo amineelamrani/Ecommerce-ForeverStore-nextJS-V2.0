@@ -27,7 +27,7 @@ export default function ProductInfosSection({
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">{title}</h1>
       <div className="flex items-center gap-2 text-sm">
         <FiveStarsFeedback rating={reviewsMedian} />
-        <p>{reviewsNumber}</p>
+        <p>({reviewsNumber})</p>
         <p>{ordersNumber} orders</p>
       </div>
       <h3 className="text-3xl font-bold">${price}</h3>

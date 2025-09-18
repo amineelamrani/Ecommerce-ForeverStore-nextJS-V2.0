@@ -1,10 +1,13 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import ReviewTabSectionItems from "./ReviewTabSectionItems";
 
 export default function TabDescriptionAndReviewsSection({
   productID,
+  title,
 }: {
   productID: string;
+  title: string;
 }) {
   return (
     <Tabs defaultValue="description" className="w-full">
@@ -34,8 +37,9 @@ export default function TabDescriptionAndReviewsSection({
         with relevant information.
       </TabsContent>
       <TabsContent value="reviews" className="border p-3 flex flex-col gap-3">
-        Here I should fetch for the reviews in the client side from an API (this
-        decision is for the sake of enhancing the time to client)
+        {/* Here I should fetch for the reviews in the client side from an API (this
+        decision is for the sake of enhancing the time to client) */}
+        <ReviewTabSectionItems title={title} productID={productID} />
       </TabsContent>
     </Tabs>
   );
