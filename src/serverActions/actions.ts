@@ -1,6 +1,6 @@
 "use server";
 
-import { Review } from "@/models/models";
+import { Product, Review } from "@/models/models";
 
 export const fetchProductReviews = async (productID: string | null) => {
   if (!productID) {
@@ -23,5 +23,27 @@ export const fetchProductReviews = async (productID: string | null) => {
   return {
     status: "success",
     result: JSON.stringify(reviews),
+  };
+};
+
+export const fetchRelatedProduct = async (
+  category: string,
+  subCategory: string
+) => {
+  // This server function is for fetching the related based on the category and subCategory of the product
+  const relatedProducts = await Product.find({
+    category: category,
+    subCategory: subCategory,
+  }).limit(5);
+  if (!relatedProducts) {
+    return {
+      status: "fail",
+      result: null,
+    };
+  }
+
+  return {
+    status: "success",
+    result: JSON.stringify(relatedProducts),
   };
 };
