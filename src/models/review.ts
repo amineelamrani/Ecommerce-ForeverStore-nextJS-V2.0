@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
+export interface userDoc extends mongoose.Document {
+  name: string;
+}
+
 export interface ReviewInterface extends mongoose.Document {
-  owner: mongoose.Schema.Types.ObjectId;
+  owner: mongoose.Schema.Types.ObjectId | userDoc;
   ownerName: string;
   content: string;
   rating: number;
