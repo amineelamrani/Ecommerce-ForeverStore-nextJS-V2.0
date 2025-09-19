@@ -1,6 +1,5 @@
 import React from "react";
 import FiveStarsFeedback from "../FiveStarsFeedback";
-import SizesSelectionSection from "./SizesSelectionSection";
 import SizeAndBuySection from "./SizeAndBuySection";
 
 interface ProductInfosProps {
