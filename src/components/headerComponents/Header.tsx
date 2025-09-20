@@ -2,10 +2,11 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "../ui/buttonHeader";
 import { Search } from "lucide-react";
-import Image from "next/image";
+
 import NavMenuHeaderProfile from "./NavMenuHeaderProfile";
 import NavMenuHeaderHidden from "./NavMenuHeaderHidden";
 import ButtonPathnamePerson from "./ButtonPathnamePerson";
+import BasketIconHeader from "./BasketIconHeader";
 
 export default function Header() {
   return (
@@ -35,18 +36,7 @@ export default function Header() {
         <NavMenuHeaderProfile />
 
         <Link href="/cart">
-          <div className="relative flex items-center justify-center">
-            <p className="absolute flex items-center justify-center rounded-full bg-black text-white text-center text-[6px] w-3 h-3 bottom-0 right-0">
-              0
-            </p>
-            <Image
-              src="/cart-icon.svg"
-              alt="Icon"
-              width={24}
-              height={24}
-              className="w-6 h-6"
-            />
-          </div>
+          <BasketIconHeader />
         </Link>
 
         <NavMenuHeaderHidden />
