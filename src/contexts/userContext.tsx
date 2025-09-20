@@ -15,7 +15,13 @@ interface currentUserInterface {
 type UserContextProviderType = {
   currentUser: currentUserInterface | null;
   setCurrentUser: (currentUser: currentUserInterface | null) => void;
-  addProductToBasket: (productInfos: BasketContentType) => void;
+  addProductToBasket: (productInfos: {
+    id: string;
+    title: string;
+    size: string;
+    image: string;
+    price: number;
+  }) => void;
   basketContent: BasketContentType[] | null;
 };
 
@@ -28,7 +34,9 @@ export interface BasketContentType {
   quantity: number;
 }
 
-export const UserContext = createContext<UserContextProviderType | null>(null);
+export const UserContext = createContext<UserContextProviderType | undefined>(
+  undefined
+);
 
 export default function UserProvider({
   children,
@@ -62,10 +70,12 @@ export default function UserProvider({
     // if nothing in localStorage & basketContent => store the infos in localStorage and also set them in setBasket
     // If already some in localStorage & basketContent => if same content add the product to localstorage and setBasket - IF not give priority to localStorage content
     if (!storedItems) {
-      localStorage.eCommerceForeverNextJS = JSON.stringify({
-        ...productInfos,
-        quantity: 1,
-      });
+      localStorage.eCommerceForeverNextJS = JSON.stringify([
+        {
+          ...productInfos,
+          quantity: 1,
+        },
+      ]);
       setBasketContent([{ ...productInfos, quantity: 1 }]);
     } else {
       const storedProductsArray = JSON.parse(storedItems);
@@ -79,19 +89,27 @@ export default function UserProvider({
           let quant = storedProductsArray[i].quantity;
           quant++;
           storedProductsArray[i] = {
-            ...storedProductsArray[i],
+            ...productInfos,
             quantity: quant,
           };
-        } else {
-          storedProductsArray.push({
-            ...productInfos,
-            quantity: 1,
-          });
+          localStorage.eCommerceForeverNextJS =
+            JSON.stringify(storedProductsArray);
+          setBasketContent(storedProductsArray);
+          return;
         }
       }
+
+      storedProductsArray.push({
+        ...productInfos,
+        quantity: 1,
+      });
       localStorage.eCommerceForeverNextJS = JSON.stringify(storedProductsArray);
       setBasketContent(storedProductsArray);
     }
+  };
+
+  const deleteProductFromBasket = (productInfos) => {
+    // This function to call when we click on delete something from the basket
   };
 
   return (

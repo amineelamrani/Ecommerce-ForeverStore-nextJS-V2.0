@@ -50,6 +50,8 @@ export default async function ProductPage({
               description={fetchedProduct.description}
               price={fetchedProduct.price}
               sizes={fetchedProduct.sizes}
+              id={productID}
+              image={fetchedProduct.images[0]}
             />
           </div>
 

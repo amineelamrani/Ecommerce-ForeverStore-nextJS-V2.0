@@ -2,8 +2,13 @@
 import React, { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
-export default function SizesSelectionSection({ sizes }: { sizes: string[] }) {
-  const [size, setSize] = useState("");
+export default function SizesSelectionSection({
+  sizes,
+  setSize,
+}: {
+  sizes: string[];
+  setSize: (size: string) => void;
+}) {
   return (
     <div className="flex flex-col">
       <h4>Select Size</h4>

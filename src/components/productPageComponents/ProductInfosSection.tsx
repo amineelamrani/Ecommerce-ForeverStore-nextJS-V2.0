@@ -10,6 +10,8 @@ interface ProductInfosProps {
   description: string;
   price: number;
   sizes: string[];
+  id: string;
+  image: string;
 }
 
 export default function ProductInfosSection({
@@ -20,6 +22,8 @@ export default function ProductInfosSection({
   description,
   price,
   sizes,
+  id,
+  image,
 }: ProductInfosProps) {
   return (
     <div className="w-full md:w-1/2 flex flex-col gap-3">
@@ -33,7 +37,10 @@ export default function ProductInfosSection({
       <p className="text-slate-600 text-xs sm:text-sm md:text-base">
         {description}
       </p>
-      <SizeAndBuySection sizes={sizes} />
+      <SizeAndBuySection
+        productInfos={{ title, id, image, price }}
+        sizes={sizes}
+      />
       <div className="w-full border-t py-5 text-xs font-mono text-slate-500 flex flex-col gap-1">
         <p>100% Original product.</p>
         <p>Cash on delivery is available on this product.</p>
