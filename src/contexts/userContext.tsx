@@ -23,6 +23,7 @@ type UserContextProviderType = {
     price: number;
   }) => void;
   basketContent: BasketContentType[] | null;
+  setBasketContent: (basketContent: BasketContentType[] | null) => void;
 };
 
 export interface BasketContentType {
@@ -114,7 +115,13 @@ export default function UserProvider({
 
   return (
     <UserContext.Provider
-      value={{ currentUser, setCurrentUser, addProductToBasket, basketContent }}
+      value={{
+        currentUser,
+        setCurrentUser,
+        addProductToBasket,
+        basketContent,
+        setBasketContent,
+      }}
     >
       {children}
     </UserContext.Provider>
