@@ -2,14 +2,25 @@
 "use client";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { BasketContentType } from "@/contexts/userContext";
+
+interface cartItemsProps {
+  item: BasketContentType;
+  position?: number;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    position: number
+  ) => void;
+  handleDelete: (e: React.MouseEvent<SVGSVGElement>) => void;
+}
 
 export default function CartItemComponent({
   item,
   position = 0,
   handleChange,
   handleDelete,
-}) {
-  const [quantity, setQuantity] = useState(item ? item.quantity : 0);
+}: cartItemsProps) {
+  const [quantity, setQuantity] = useState<number>(item ? item.quantity : 0);
   return (
     <div>
       <div className="flex w-full border-b border-t py-5">
@@ -34,7 +45,7 @@ export default function CartItemComponent({
               value={quantity}
               onChange={(e) => {
                 handleChange(e, position);
-                setQuantity(e.target.value);
+                setQuantity(Number(e.target.value));
               }}
               className="w-8 md:w-15 border px-1 text-xs md:text-base"
             />
