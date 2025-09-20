@@ -109,10 +109,6 @@ export default function UserProvider({
     }
   };
 
-  const deleteProductFromBasket = (productInfos) => {
-    // This function to call when we click on delete something from the basket
-  };
-
   return (
     <UserContext.Provider
       value={{
