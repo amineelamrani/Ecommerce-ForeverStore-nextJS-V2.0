@@ -1,11 +1,13 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { UserContext } from "@/contexts/userContext";
 import CartItemComponent from "@/components/cartComponents/CartItemComponent";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // This page would be purely client side (as there is a need for accessing localstorage ... and No need for the  SEO for this specific route)
 
@@ -19,7 +21,24 @@ export default function Cart() {
   }
   const { basketContent, currentUser, setBasketContent } = context;
 
-  let cartContentItems = <h1>Cart Empty!</h1>;
+  let cartContentItems = [
+    <h1
+      className="flex items-center gap-2 text-gray-600"
+      key="starting-cart-content-empty"
+    >
+      Loading Cart Items <LoaderCircle className="animate-spin" size={15} />
+    </h1>,
+    <div
+      key="second-items-starting-cart-content-empty"
+      className="flex items-center space-x-4 "
+    >
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>,
+  ];
   let subTotal = 0;
   if (basketContent !== null) {
     for (let i = 0; i < basketContent.length; i++) {
@@ -27,17 +46,20 @@ export default function Cart() {
     }
   }
 
-  const handleChange = (e, position) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    position: number
+  ) => {
     // need to update the content in the localStorage after clicking on the increase quantity input field
-    const cartCopy = [...basketContent];
-    cartCopy[position].quantity = e.target.value * 1;
+    const cartCopy = [...basketContent!];
+    cartCopy[position].quantity = Number(e.target.value);
     // we need to change the quantity and we set it in basketContent and then we add it in localStorage
     setBasketContent(cartCopy);
     localStorage.eCommerceForeverNextJS = JSON.stringify(cartCopy);
   };
 
-  const handleDelete = (e) => {
-    const position = e.target.id.split("-")[1];
+  const handleDelete = (e: React.MouseEvent<SVGSVGElement>) => {
+    const position = Number(e.currentTarget.id.split("-")[1]);
     if (position === undefined) return;
     const cartCopy = basketContent!.filter(
       (_, index) => index !== position * 1
@@ -114,6 +136,8 @@ export default function Cart() {
           </div>
         </div>
       )}
+      {!basketContent ||
+        (basketContent.length === 0 && <h1>Cart Is Empty...</h1>)}
     </div>
   );
 }
