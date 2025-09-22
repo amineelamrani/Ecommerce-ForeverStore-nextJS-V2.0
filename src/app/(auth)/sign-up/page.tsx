@@ -47,10 +47,20 @@ export default function SignUp() {
                   <div className="grid gap-3">
                     <Label htmlFor="name">Name</Label>
                     <Input
+                      id="name"
+                      type="name"
+                      placeholder="Name"
+                      name="name"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-3">
+                    <Label htmlFor="name">Email</Label>
+                    <Input
                       id="email"
                       type="email"
                       placeholder="name@example.com"
-                      name="name"
+                      name="email"
                       required
                     />
                   </div>
