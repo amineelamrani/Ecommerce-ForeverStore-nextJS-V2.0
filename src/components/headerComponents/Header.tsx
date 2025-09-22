@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import { Button } from "../ui/buttonHeader";
 import { Search } from "lucide-react";
 
 import NavMenuHeaderProfile from "./NavMenuHeaderProfile";
 import NavMenuHeaderHidden from "./NavMenuHeaderHidden";
 import ButtonPathnamePerson from "./ButtonPathnamePerson";
 import BasketIconHeader from "./BasketIconHeader";
+import AdminPanelHeaderSection from "./AdminPanelHeaderSection";
 
 export default function Header() {
   return (
@@ -21,11 +21,7 @@ export default function Header() {
         <ButtonPathnamePerson to="/about" page="ABOUT" />
         <ButtonPathnamePerson to="/contact" page="CONTACT" />
 
-        <Link href="/admin">
-          <Button variant="outline" className="px-5 rounded-full">
-            AdminPanel
-          </Button>
-        </Link>
+        <AdminPanelHeaderSection />
       </div>
 
       <div className="flex items-center">
