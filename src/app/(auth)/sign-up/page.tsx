@@ -9,7 +9,9 @@ import {
   signUpServerAction,
 } from "@/serverActions/authActions";
 import Link from "next/link";
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 // This will be a client component that will call a server action using the useActionState hook
 
 const initialSignUpState: InitialSignUpInterface = {
@@ -25,7 +27,23 @@ export default function SignUp() {
     signUpServerAction,
     initialSignUpState
   );
-  console.log(state);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && state.error.error) {
+      toast.error(`Error : ${state.error.message}`, {
+        duration: 3000,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.error]);
+
+  if (!state.error.error && !isLoading && state.userMail !== null) {
+    console.log("Account created successfully");
+    setTimeout(() => {
+      router.push(`/account-confirmation/${state.userMail}`);
+    }, 100); // 100ms delay, adjust as needed
+  }
 
   return (
     <div className="flex my-10 w-full items-center justify-center p-6 md:p-10">
