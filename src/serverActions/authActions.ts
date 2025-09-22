@@ -3,6 +3,9 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { User } from "@/models/models";
 import { transporter } from "@/utils/email";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export interface InitialSignUpInterface {
   error: {
@@ -10,6 +13,20 @@ export interface InitialSignUpInterface {
     message: string;
   };
   userMail: null | string;
+}
+
+export interface InitialSignInInterface {
+  error: {
+    error: boolean;
+    message: string;
+  };
+  currentUser: null | {
+    name: string;
+    email: string;
+    orders: string;
+    favourites: string;
+    admin: boolean;
+  };
 }
 
 export const signUpServerAction = async (
@@ -76,10 +93,74 @@ export const signUpServerAction = async (
   }
 
   return {
-    userMail: "",
+    userMail: null,
+    error: {
+      error: true,
+      message: "There was an error try again later",
+    },
+  };
+};
+
+export const signInServerAction = async (
+  initialState: InitialSignInInterface,
+  formData: FormData
+) => {
+  const rawFormData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  if (!rawFormData.email || !rawFormData.password) {
+    return {
+      error: {
+        error: true,
+        message: "Please provide email and password",
+      },
+      currentUser: null,
+    };
+  }
+  await dbConnect();
+  const userImpacted = await User.findOne({ email: rawFormData.email });
+  if (!userImpacted || !userImpacted.isValid) {
+    return {
+      error: {
+        error: true,
+        message: "User Not Found or not confirmed",
+      },
+      currentUser: null,
+    };
+  }
+  const validPassword = bcrypt.compareSync(
+    rawFormData.password.toString(),
+    userImpacted.password
+  );
+  if (!validPassword) {
+    return {
+      error: {
+        error: true,
+        message: "email or password is invalid",
+      },
+      currentUser: null,
+    };
+  }
+  (await cookies()).set({
+    name: "foreverEcommNext_2.0",
+    value: signToken(userImpacted._id.toString()),
+    httpOnly: true,
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
+
+  return {
     error: {
       error: false,
-      message: "This is a test",
+      message: "",
+    },
+    currentUser: {
+      name: userImpacted.name,
+      email: userImpacted.email,
+      orders: JSON.stringify(userImpacted.orders),
+      favourites: JSON.stringify(userImpacted.favourites),
+      admin: userImpacted.admin,
     },
   };
 };
@@ -112,4 +193,8 @@ const sendMailConfirmation = async (
     `,
     // html: "<b>Hello world?</b>", // html body
   });
+};
+
+const signToken = (id: string) => {
+  return jwt.sign({ id: id }, process.env.SECRET_JWT_KEY!);
 };
