@@ -1,14 +1,12 @@
 "use client";
 
 import React, { createContext, useEffect, useState } from "react";
-import mongoose from "mongoose";
-import { FavouriteInterface } from "@/models/user";
 
 interface currentUserInterface {
   name: string;
   email: string;
-  orders: mongoose.Schema.Types.ObjectId[];
-  favourites: FavouriteInterface[];
+  orders: string[];
+  favourites: string[];
   admin: boolean;
 }
 
