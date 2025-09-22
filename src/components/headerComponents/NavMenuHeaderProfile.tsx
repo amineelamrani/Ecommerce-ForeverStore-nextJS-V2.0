@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,8 +10,16 @@ import {
 } from "@/components/ui/navigation-menu";
 import { UserRound } from "lucide-react";
 import Link from "next/link";
+import { UserContext } from "@/contexts/userContext";
 
 export default function NavMenuHeaderProfile() {
+  const context = useContext(UserContext);
+  if (!context) {
+    console.log("there is an error while uploading context");
+    return <></>;
+  }
+  const { currentUser } = context;
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -24,13 +32,17 @@ export default function NavMenuHeaderProfile() {
             <NavigationMenuLink asChild>
               <Link href="/purchased">Purchases</Link>
             </NavigationMenuLink>
-            <NavigationMenuLink asChild>
-              <Link href="/">Logout</Link>
-            </NavigationMenuLink>
+            {currentUser && (
+              <NavigationMenuLink asChild>
+                <Link href="/">Logout</Link>
+              </NavigationMenuLink>
+            )}
 
-            <NavigationMenuLink asChild>
-              <Link href="/login">Login</Link>
-            </NavigationMenuLink>
+            {!currentUser && (
+              <NavigationMenuLink asChild>
+                <Link href="/login">Login</Link>
+              </NavigationMenuLink>
+            )}
           </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>
