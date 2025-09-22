@@ -13,9 +13,11 @@ import React, { useActionState } from "react";
 // This will be a client component that will call a server action using the useActionState hook
 
 const initialSignUpState: InitialSignUpInterface = {
-  error: false,
-  status: null,
-  message: "",
+  error: {
+    error: false,
+    message: "",
+  },
+  userMail: null,
 };
 
 export default function SignUp() {
