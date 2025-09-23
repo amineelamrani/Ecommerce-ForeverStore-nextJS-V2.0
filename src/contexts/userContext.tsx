@@ -1,5 +1,6 @@
 "use client";
 
+import { getAuthenticatedUser } from "@/serverActions/authActions";
 import React, { createContext, useEffect, useState } from "react";
 
 interface currentUserInterface {
@@ -55,6 +56,28 @@ export default function UserProvider({
     if (localStorage.eCommerceForeverNextJS) {
       setBasketContent(JSON.parse(localStorage.eCommerceForeverNextJS));
     }
+  }, []);
+
+  useEffect(() => {
+    // This would be useful to fill the currentUser
+    // This would be called the first time this website is open and will call the server to check for the currentUser infos from the server and will be called juste one time to not store it in localStorage
+
+    const getCurrentUserServer = async () => {
+      const res = await getAuthenticatedUser();
+      if (res) {
+        setCurrentUser({
+          name: res.name,
+          email: res.email,
+          orders: JSON.parse(res.orders),
+          favourites: JSON.parse(res.favourites),
+          admin: res.admin,
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    };
+
+    getCurrentUserServer();
   }, []);
 
   const addProductToBasket = (productInfos: {
