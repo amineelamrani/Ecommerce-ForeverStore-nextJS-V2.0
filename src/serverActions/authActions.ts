@@ -289,6 +289,97 @@ export const handleForgotPasswordForm = async (
   };
 };
 
+export const handleResetPasswordForm = async (
+  initialState: InitialSignInInterface,
+  formData: FormData
+) => {
+  const email = formData.get("email");
+  const token = formData.get("token");
+  const password = formData.get("password");
+  const confirmPassword = formData.get("confirmPassword");
+
+  if (!email || !token || !password || !confirmPassword) {
+    return {
+      error: {
+        error: true,
+        message: "Please provide all fields...",
+      },
+      currentUser: null,
+    };
+  }
+  await dbConnect();
+  const user = await User.findOne({ email: email.toString() });
+  if (!user || !user.passwordResetToken) {
+    return {
+      error: {
+        error: true,
+        message: "An internal error occured...",
+      },
+      currentUser: null,
+    };
+  }
+
+  const decoded = jwt.verify(
+    user.passwordResetToken,
+    process.env.SECRET_JWT_KEY!
+  );
+  if (typeof decoded === "string") {
+    return {
+      error: {
+        error: true,
+        message: "Cannot extract the token id",
+      },
+      currentUser: null,
+    };
+  }
+
+  if ((decoded as JwtPayload).id === token) {
+    if (user.passwordResetExpires > Date.now()) {
+      user.password = password;
+      user.confirmPassword = confirmPassword;
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+      (await cookies()).set({
+        name: "foreverEcommNext_2.0",
+        value: signToken(user._id.toString()),
+        httpOnly: true,
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      });
+
+      return {
+        error: {
+          error: false,
+          message: "",
+        },
+        currentUser: {
+          name: user.name,
+          email: user.email,
+          orders: JSON.stringify(user.orders),
+          favourites: JSON.stringify(user.favourites),
+          admin: user.admin,
+        },
+      };
+    } else {
+      return {
+        error: {
+          error: true,
+          message: "Reset token is expired",
+        },
+        currentUser: null,
+      };
+    }
+  } else {
+    return {
+      error: {
+        error: true,
+        message: "Not the valid token. Please provide the valid token.",
+      },
+      currentUser: null,
+    };
+  }
+};
+
 const generateRandomString = () => {
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
