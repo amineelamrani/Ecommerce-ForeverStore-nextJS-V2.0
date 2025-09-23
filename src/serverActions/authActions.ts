@@ -4,7 +4,7 @@ import dbConnect from "@/lib/database/dbConnect";
 import { User } from "@/models/models";
 import { transporter } from "@/utils/email";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 
 export interface InitialSignUpInterface {
@@ -201,6 +201,38 @@ export const accountConfirmationServerAction = async (
     favourites: JSON.stringify(unConfirmedUser.favourites),
     admin: unConfirmedUser.admin,
   };
+};
+
+export const getAuthenticatedUser = async () => {
+  // This server action to get the current User infos when open first our website - decision to handle it in the server do not persist currentUser infos through sessions
+  await dbConnect();
+  const tokenCookies = await cookies();
+  const token = tokenCookies.get("foreverEcommNext_2.0")
+    ? tokenCookies.get("foreverEcommNext_2.0")?.value
+    : null;
+  if (!token || token === "loggedout") return null;
+  const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!);
+  if (typeof decoded === "string") {
+    return null;
+  }
+
+  const id = (decoded as JwtPayload).id;
+  const checkUser = await User.findById(id);
+  if (
+    checkUser &&
+    checkUser.name &&
+    checkUser.name !== "" &&
+    checkUser.isValid
+  ) {
+    return {
+      name: checkUser.name,
+      email: checkUser.email,
+      orders: JSON.stringify(checkUser.orders),
+      favourites: JSON.stringify(checkUser.favourites),
+      admin: checkUser.admin,
+    };
+  }
+  return null;
 };
 
 const generateRandomString = () => {
