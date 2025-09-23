@@ -29,6 +29,15 @@ export interface InitialSignInInterface {
   };
 }
 
+export interface InitialForgotPassInterface {
+  error: {
+    error: boolean;
+    message: string;
+  };
+  handled: boolean;
+  email: string;
+}
+
 export const signUpServerAction = async (
   initialState: InitialSignUpInterface,
   formData: FormData
@@ -235,6 +244,51 @@ export const getAuthenticatedUser = async () => {
   return null;
 };
 
+export const handleForgotPasswordForm = async (
+  initialState: InitialForgotPassInterface,
+  formData: FormData
+) => {
+  const email = formData.get("email");
+  if (!email) {
+    return {
+      error: {
+        error: true,
+        message: "Mail not provided try again later",
+      },
+      handled: false,
+      email: "",
+    };
+  }
+  await dbConnect();
+  const user = await User.findOne({ email });
+  if (!user || !user.isValid) {
+    return {
+      error: {
+        error: true,
+        message: "User Not Found or not confirmed",
+      },
+      handled: false,
+      email: email.toString(),
+    };
+  }
+
+  const resetToken = generateRandomResetToken();
+  user.passwordResetToken = signToken(resetToken);
+  user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  user.confirmPassword = user.password;
+  await user.save();
+
+  sendResetMail(email.toString(), resetToken);
+  return {
+    error: {
+      error: false,
+      message: "",
+    },
+    handled: true,
+    email: email.toString(),
+  };
+};
+
 const generateRandomString = () => {
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -267,4 +321,28 @@ const sendMailConfirmation = async (
 
 const signToken = (id: string) => {
   return jwt.sign({ id: id }, process.env.SECRET_JWT_KEY!);
+};
+
+const generateRandomResetToken = () => {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let password = "";
+  for (let i = 0; i < 25; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+};
+
+const sendResetMail = async (email: string, resetToken: string) => {
+  await transporter.sendMail({
+    from: `${process.env.NODE_MAIL}`,
+    to: email, // list of receivers
+    subject: `Resetting Password `, // Subject line
+    html: `<h1>Hello!</h1>
+      <p>Please visit this link to reset your password.<br/>It is valid for only 1hour! Do not share this Link with anyone!!</p>
+      <p>Here is your reset Token </br>${resetToken}</p>
+      
+    `,
+  });
 };
