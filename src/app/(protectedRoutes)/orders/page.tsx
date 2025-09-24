@@ -12,7 +12,7 @@ import { Check } from "lucide-react";
 import React, { useActionState, useContext, useRef, useState } from "react";
 
 const initialValue: InitialOrderingInterface = {
-  redirectingUrl: "",
+  redirectingUrl: null,
   message: "",
   paymentMethod: "card",
   error: {
@@ -51,8 +51,10 @@ export default function Orders() {
 
   // Algorithm
   // when click on submit -> Call a server action (if succeed it will five a stripe url)
-  // when the stripe window is opened and the user made the payment -> the checkout session will direct me to ?success=true
+  // when the stripe window is opened and the user made the payment -> the checkout session will direct me to ?success=true&session_id
   // if ?success=true => clear the basket and localStorage and navigate to /cart (purchased)
+
+  // /!\ Either redirect to this?success=true&session_id or use another route just for confirming => That route would do the following : check whether the user has done his payment really or just tricked the url - Then store it in the database in the backend as done
 
   return (
     <div className="flex flex-col md:flex-row w-full py-8 md:py-15 gap-5 relative">
