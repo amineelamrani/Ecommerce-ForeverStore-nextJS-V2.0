@@ -244,6 +244,22 @@ export const getAuthenticatedUser = async () => {
   return null;
 };
 
+export const getUserId = async () => {
+  await dbConnect();
+  const tokenCookies = await cookies();
+  const token = tokenCookies.get("foreverEcommNext_2.0")
+    ? tokenCookies.get("foreverEcommNext_2.0")?.value
+    : null;
+  if (!token || token === "loggedout") return null;
+  const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!);
+  if (typeof decoded === "string") {
+    return null;
+  }
+
+  const id = (decoded as JwtPayload).id;
+  return id;
+};
+
 export const handleForgotPasswordForm = async (
   initialState: InitialForgotPassInterface,
   formData: FormData
