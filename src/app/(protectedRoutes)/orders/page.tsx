@@ -5,11 +5,18 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { UserContext } from "@/contexts/userContext";
 import {
+  checkStripeSuccess,
   InitialOrderingInterface,
   orderServerAction,
 } from "@/serverActions/stripeActions";
 import { Check } from "lucide-react";
-import React, { useActionState, useContext, useRef, useState } from "react";
+import React, {
+  useActionState,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 const initialValue: InitialOrderingInterface = {
   redirectingUrl: null,
@@ -32,6 +39,36 @@ export default function Orders() {
     initialValue
   );
 
+  useEffect(() => {
+    const checkStripe = async () => {
+      console.log("Check Stripe invoked");
+      const params = new URLSearchParams(window.location.search);
+      const success = params.get("success");
+      const session_id = params.get("session_id");
+      if (success === "true" && session_id) {
+        const stripeTransactionChecking = await checkStripeSuccess(session_id);
+        if (stripeTransactionChecking.status === "success") {
+          setPaymentStripeSuccess(true);
+        }
+      } else {
+        setPaymentStripeSuccess(false);
+      }
+    };
+
+    checkStripe();
+  }, []);
+
+  console.log(state);
+
+  if (
+    !state.error.error &&
+    state.paymentMethod === "card" &&
+    state.redirectingUrl &&
+    state.redirectingUrl !== ""
+  ) {
+    window.location.href = state.redirectingUrl;
+  }
+
   const context = useContext(UserContext);
 
   if (!context) {
@@ -48,6 +85,10 @@ export default function Orders() {
     }
   }
   total = subTotal + 10;
+
+  // Check if payment handled
+  // If stripe => window.location.href = redirectingUrl
+  // If cod => setPaymentCODSuccess to true / empty localstorage / navigate to /cart after a timeout
 
   // Algorithm
   // when click on submit -> Call a server action (if succeed it will five a stripe url)
