@@ -23,6 +23,7 @@ type UserContextProviderType = {
   }) => void;
   basketContent: BasketContentType[] | null;
   setBasketContent: (basketContent: BasketContentType[] | null) => void;
+  getCurrentUserServer: () => void;
 };
 
 export interface BasketContentType {
@@ -58,24 +59,24 @@ export default function UserProvider({
     }
   }, []);
 
+  const getCurrentUserServer = async () => {
+    const res = await getAuthenticatedUser();
+    if (res) {
+      setCurrentUser({
+        name: res.name,
+        email: res.email,
+        orders: JSON.parse(res.orders),
+        favourites: JSON.parse(res.favourites),
+        admin: res.admin,
+      });
+    } else {
+      setCurrentUser(null);
+    }
+  };
+
   useEffect(() => {
     // This would be useful to fill the currentUser
     // This would be called the first time this website is open and will call the server to check for the currentUser infos from the server and will be called juste one time to not store it in localStorage
-
-    const getCurrentUserServer = async () => {
-      const res = await getAuthenticatedUser();
-      if (res) {
-        setCurrentUser({
-          name: res.name,
-          email: res.email,
-          orders: JSON.parse(res.orders),
-          favourites: JSON.parse(res.favourites),
-          admin: res.admin,
-        });
-      } else {
-        setCurrentUser(null);
-      }
-    };
 
     getCurrentUserServer();
   }, []);
@@ -138,6 +139,7 @@ export default function UserProvider({
         addProductToBasket,
         basketContent,
         setBasketContent,
+        getCurrentUserServer,
       }}
     >
       {children}

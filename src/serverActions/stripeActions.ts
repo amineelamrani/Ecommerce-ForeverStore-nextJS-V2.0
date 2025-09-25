@@ -115,13 +115,7 @@ export const orderServerAction = async (
         quantity: 1,
       });
 
-      const session = await stripe.checkout.sessions.create({
-        line_items: paymentItems,
-        mode: "payment",
-        success_url: `${process.env.REDIRECTING_URL}?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.REDIRECTING_URL}?canceled=true`,
-      });
-      // Start
+      /////////////////////// Start
 
       let subTotal = 0,
         total = 0;
@@ -156,7 +150,7 @@ export const orderServerAction = async (
           phone: Number(phone),
         },
         payment: {
-          method: "cod",
+          method: "stripe",
           status: "pending",
           money: total,
         },
@@ -177,7 +171,27 @@ export const orderServerAction = async (
         }
       );
 
-      // End
+      if (!arrayProducts) {
+        return {
+          redirectingUrl: "",
+          message: "",
+          paymentMethod: "card",
+          error: {
+            error: true,
+            message: "Internal Server Error!",
+          },
+        };
+      }
+
+      /////////////////////////// End
+      const session = await stripe.checkout.sessions.create({
+        line_items: paymentItems,
+        mode: "payment",
+        success_url: `${
+          process.env.REDIRECTING_URL
+        }?success=true&session_id={CHECKOUT_SESSION_ID}&order_id=${newOrder._id.toString()}`,
+        cancel_url: `${process.env.REDIRECTING_URL}?canceled=true`,
+      });
 
       return {
         redirectingUrl: session.url,
@@ -302,7 +316,10 @@ export const orderServerAction = async (
   }
 };
 
-export const checkStripeSuccess = async (session_id: string) => {
+export const checkStripeSuccess = async (
+  session_id: string,
+  order_id: string
+) => {
   // This server function to check if the stripe payment is done successfully  or the user try to trick us
   // Url returned when success : '${process.env.REDIRECTING_URL}?success=true&session_id={CHECKOUT_SESSION_ID}'
   // So I will received the session_id from the client, and I will check if it is done successfully or not then will return a feedback to the browser if it is succeded or not
@@ -320,7 +337,12 @@ export const checkStripeSuccess = async (session_id: string) => {
     if (session.payment_status === "paid") {
       // Then at this moment we need to update the database to take that command into consideration
       // But here if we decided to add it to the database in this function then we will call the server with the same data two time
-      // /!\ Decision -> when we call this form function "orderServerAction" we will create an order but with unpaid status and after the stripe payment, if success here then we pass the status to paid else we delete that Order from the database
+
+      // /!\ Decision -> when we call the form function "orderServerAction" we will create an order but with unpaid status and after the stripe payment, if success here then we pass the status to paid else we delete that Order from the database
+
+      // We have order_id and session_id (so when success -> we update status of payment to payed)
+      // If not successfull -> We do the inverse, remove the product, decrement from the product
+
       return {
         status: "success",
         message: "Payment Done successfully",
@@ -338,4 +360,9 @@ export const checkStripeSuccess = async (session_id: string) => {
         "Internal Error while trying to proceed with Payment, Please Try Again",
     };
   }
+};
+
+const removeOrder = async (order_id: string) => {
+  // This is the process that will be made when a stripe order is not paid successfully
+  // fetch for the order
 };

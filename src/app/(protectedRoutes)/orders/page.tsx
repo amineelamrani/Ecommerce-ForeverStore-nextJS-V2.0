@@ -45,8 +45,12 @@ export default function Orders() {
       const params = new URLSearchParams(window.location.search);
       const success = params.get("success");
       const session_id = params.get("session_id");
-      if (success === "true" && session_id) {
-        const stripeTransactionChecking = await checkStripeSuccess(session_id);
+      const order_id = params.get("order_id");
+      if (success === "true" && session_id && order_id) {
+        const stripeTransactionChecking = await checkStripeSuccess(
+          session_id,
+          order_id
+        ); // This function to check if paid really or not -> If yes then it do everything on the server whats need is only to empty localStorage and setBasketContent and call getCurrentUserServer from UserContext
         if (stripeTransactionChecking.status === "success") {
           setPaymentStripeSuccess(true);
         }
