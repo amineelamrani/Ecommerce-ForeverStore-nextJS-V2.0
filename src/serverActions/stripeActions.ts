@@ -342,6 +342,25 @@ export const checkStripeSuccess = async (
 
       // We have order_id and session_id (so when success -> we update status of payment to payed)
       // If not successfull -> We do the inverse, remove the product, decrement from the product
+      await dbConnect();
+      const impactedOrder = await Order.findById(order_id);
+      if (!impactedOrder) {
+        return {
+          status: "fail",
+          message: "No Such an Order",
+        };
+      }
+
+      if (
+        impactedOrder.payment.method === "stripe" &&
+        impactedOrder.payment.status === "pending"
+      ) {
+        impactedOrder.payment = {
+          ...impactedOrder.payment,
+          ["status"]: "payed",
+        };
+        await impactedOrder.save();
+      }
 
       return {
         status: "success",
