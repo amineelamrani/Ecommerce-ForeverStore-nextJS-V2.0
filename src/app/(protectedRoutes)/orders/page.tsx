@@ -10,6 +10,8 @@ import {
   orderServerAction,
 } from "@/serverActions/stripeActions";
 import { Check } from "lucide-react";
+import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
+import { useRouter } from "next/navigation";
 import React, {
   useActionState,
   useContext,
@@ -38,6 +40,7 @@ export default function Orders() {
     orderServerAction,
     initialValue
   );
+  const router = useRouter();
 
   useEffect(() => {
     const checkStripe = async () => {
@@ -79,7 +82,19 @@ export default function Orders() {
     return <></>;
   }
 
-  const { basketContent, setBasketContent } = context;
+  const { basketContent, setBasketContent, getCurrentUserServer } = context;
+
+  if (paymentStripeSuccess) {
+    // If yes then empty localStorage and setBasketContent and call getCurrentUserServer from UserContext
+    const timeoutId = setTimeout(() => {
+      localStorage.removeItem("eCommerceForeverNextJS");
+      router.push("/cart");
+      setBasketContent(null);
+      getCurrentUserServer();
+    }, 5000);
+
+    return () => clearTimeout(timeoutId);
+  }
 
   let subTotal = 0,
     total = 0;

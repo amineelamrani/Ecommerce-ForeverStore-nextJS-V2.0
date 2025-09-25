@@ -367,6 +367,11 @@ export const checkStripeSuccess = async (
         message: "Payment Done successfully",
       };
     } else {
+      // Here will go the logic for removing the order and its relevant infos
+      const isRemoved = await removeOrderRoutine(order_id);
+      if (!isRemoved) {
+        throw new Error("Something went wrong");
+      }
       return {
         status: "fail",
         message: "Not Paid",
@@ -381,7 +386,37 @@ export const checkStripeSuccess = async (
   }
 };
 
-const removeOrder = async (order_id: string) => {
+const removeOrderRoutine = async (order_id: string) => {
   // This is the process that will be made when a stripe order is not paid successfully
   // fetch for the order
+  // Get the product IDs -> For each product will decrement ordersNumber--
+  // Get the user_id (order.owner) and remove the order._id from the orders field
+  // Lastly remove the order impacted
+  await dbConnect();
+  const undesiredOrder = await Order.findById(order_id);
+  if (!undesiredOrder) {
+    return false;
+  }
+  const arrayProducts = undesiredOrder.products.map(
+    async (item: { productID: string; size: string; quantity: number }) => {
+      const productImpacted = await Product.findById(item.productID);
+      productImpacted.ordersNumber--;
+      await productImpacted.save();
+    }
+  );
+
+  const impactedUser = await User.findById(undesiredOrder.owner);
+  if (!impactedUser) {
+    return false;
+  }
+
+  const newOrdersArray = impactedUser.orders.filter(
+    (order: string) => order.toString() !== order_id
+  );
+  impactedUser.confirmPassword = impactedUser.password;
+  impactedUser.orders = newOrdersArray;
+  await impactedUser.save();
+
+  await undesiredOrder.deleteOne();
+  return true;
 };
