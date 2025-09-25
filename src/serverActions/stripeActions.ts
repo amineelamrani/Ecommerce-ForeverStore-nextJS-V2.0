@@ -21,7 +21,6 @@ export const orderServerAction = async (
   initialState: InitialOrderingInterface,
   formData: FormData
 ) => {
-  console.log("Server Action invoqued");
   if (
     !formData.get("productsToBuy") ||
     !formData.get("paymentMethod") ||
@@ -333,7 +332,6 @@ export const checkStripeSuccess = async (
 
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    console.log(session);
     if (session.payment_status === "paid") {
       // Then at this moment we need to update the database to take that command into consideration
       // But here if we decided to add it to the database in this function then we will call the server with the same data two time

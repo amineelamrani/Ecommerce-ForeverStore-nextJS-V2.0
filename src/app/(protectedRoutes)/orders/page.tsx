@@ -44,7 +44,6 @@ export default function Orders() {
 
   useEffect(() => {
     const checkStripe = async () => {
-      console.log("Check Stripe invoked");
       const params = new URLSearchParams(window.location.search);
       const success = params.get("success");
       const session_id = params.get("session_id");
@@ -65,7 +64,21 @@ export default function Orders() {
     checkStripe();
   }, []);
 
-  console.log(state);
+  useEffect(() => {
+    if (paymentStripeSuccess && context) {
+      //  /!\ The below algorithm need to be done in a useEffect not here
+
+      // If yes then empty localStorage and setBasketContent and call getCurrentUserServer from UserContext
+      const timeoutId = setTimeout(() => {
+        localStorage.removeItem("eCommerceForeverNextJS");
+        router.push("/cart");
+        setBasketContent(null);
+        getCurrentUserServer();
+      }, 5000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [paymentStripeSuccess]);
 
   if (
     !state.error.error &&
@@ -83,18 +96,6 @@ export default function Orders() {
   }
 
   const { basketContent, setBasketContent, getCurrentUserServer } = context;
-
-  if (paymentStripeSuccess) {
-    // If yes then empty localStorage and setBasketContent and call getCurrentUserServer from UserContext
-    const timeoutId = setTimeout(() => {
-      localStorage.removeItem("eCommerceForeverNextJS");
-      router.push("/cart");
-      setBasketContent(null);
-      getCurrentUserServer();
-    }, 5000);
-
-    return () => clearTimeout(timeoutId);
-  }
 
   let subTotal = 0,
     total = 0;
