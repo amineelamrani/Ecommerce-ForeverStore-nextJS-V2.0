@@ -77,6 +77,8 @@ export default function Cart() {
           onClick: () => router.push("/login"),
         },
       });
+    } else {
+      router.push("/orders");
     }
   };
 
