@@ -43,8 +43,6 @@ export default function ProductImagesSection({
     return <></>;
   }
 
-  const { currentUser } = context;
-
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const url = new URL(e.currentTarget.currentSrc);
     const encoded = url.searchParams.get("url");
