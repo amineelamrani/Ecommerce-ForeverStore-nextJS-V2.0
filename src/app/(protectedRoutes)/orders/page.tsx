@@ -10,7 +10,6 @@ import {
   orderServerAction,
 } from "@/serverActions/stripeActions";
 import { Check } from "lucide-react";
-import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
 import { useRouter } from "next/navigation";
 import React, {
   useActionState,
@@ -56,8 +55,6 @@ export default function Orders() {
         if (stripeTransactionChecking.status === "success") {
           setPaymentStripeSuccess(true);
         }
-      } else {
-        setPaymentStripeSuccess(false);
       }
     };
 
@@ -80,6 +77,20 @@ export default function Orders() {
     }
   }, [paymentStripeSuccess]);
 
+  useEffect(() => {
+    if (paymentCODSuccess && context) {
+      // si paymentCod done and context exist then empty the localStorage and go to cart + synhronise current user
+      const timeoutId = setTimeout(() => {
+        localStorage.removeItem("eCommerceForeverNextJS");
+        router.push("/cart");
+        setBasketContent(null);
+        getCurrentUserServer();
+      }, 5000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [paymentCODSuccess]);
+
   if (
     !state.error.error &&
     state.paymentMethod === "card" &&
@@ -87,6 +98,13 @@ export default function Orders() {
     state.redirectingUrl !== ""
   ) {
     window.location.href = state.redirectingUrl;
+  } else if (
+    !state.error.error &&
+    state.paymentMethod === "cod" &&
+    state.redirectingUrl &&
+    state.redirectingUrl !== ""
+  ) {
+    setPaymentCODSuccess(true);
   }
 
   const context = useContext(UserContext);
