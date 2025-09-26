@@ -56,17 +56,20 @@ export const isProductPurchased = async (productID: string) => {
   if (!userId) {
     return false;
   }
+
   const impactedUser = await User.findById(userId)
     .select("orders")
     .populate("orders", "products statusDelivery");
-
   // We have array of impactedUser.orders and inside each array a nest array of .products
 
   for (let i = 0; i < impactedUser.orders.length; i++) {
     const { statusDelivery } = impactedUser.orders[i];
     if (statusDelivery === "Delivered") {
+      // console.log(impactedUser.orders[i]);
       for (let j = 0; j < impactedUser.orders[i].products.length; j++) {
-        if (impactedUser.orders[i].products[j].productID === productID) {
+        if (
+          impactedUser.orders[i].products[j].productID.toString() === productID
+        ) {
           return true;
         }
       }
