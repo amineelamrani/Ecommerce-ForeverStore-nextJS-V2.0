@@ -68,44 +68,15 @@ export default function Orders() {
       // If yes then empty localStorage and setBasketContent and call getCurrentUserServer from UserContext
       const timeoutId = setTimeout(() => {
         localStorage.removeItem("eCommerceForeverNextJS");
-        router.push("/cart");
+
         setBasketContent(null);
         getCurrentUserServer();
+        router.push("/cart");
       }, 5000);
 
       return () => clearTimeout(timeoutId);
     }
   }, [paymentStripeSuccess]);
-
-  useEffect(() => {
-    if (paymentCODSuccess && context) {
-      // si paymentCod done and context exist then empty the localStorage and go to cart + synhronise current user
-      const timeoutId = setTimeout(() => {
-        localStorage.removeItem("eCommerceForeverNextJS");
-        router.push("/cart");
-        setBasketContent(null);
-        getCurrentUserServer();
-      }, 5000);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [paymentCODSuccess]);
-
-  if (
-    !state.error.error &&
-    state.paymentMethod === "card" &&
-    state.redirectingUrl &&
-    state.redirectingUrl !== ""
-  ) {
-    window.location.href = state.redirectingUrl;
-  } else if (
-    !state.error.error &&
-    state.paymentMethod === "cod" &&
-    state.redirectingUrl &&
-    state.redirectingUrl !== ""
-  ) {
-    setPaymentCODSuccess(true);
-  }
 
   const context = useContext(UserContext);
 
@@ -123,6 +94,28 @@ export default function Orders() {
     }
   }
   total = subTotal + 10;
+
+  if (
+    !state.error.error &&
+    state.paymentMethod === "card" &&
+    state.redirectingUrl &&
+    state.redirectingUrl !== ""
+  ) {
+    window.location.href = state.redirectingUrl;
+  } else if (
+    !state.error.error &&
+    state.paymentMethod === "cod" &&
+    state.redirectingUrl &&
+    state.redirectingUrl !== ""
+  ) {
+    // setPaymentCODSuccess(true);
+    localStorage.removeItem("eCommerceForeverNextJS");
+    setBasketContent(null);
+    getCurrentUserServer();
+    setTimeout(() => {
+      router.push("/cart");
+    }, 200); // 100ms delay, adjust as needed
+  }
 
   // Check if payment handled
   // If stripe => window.location.href = redirectingUrl
