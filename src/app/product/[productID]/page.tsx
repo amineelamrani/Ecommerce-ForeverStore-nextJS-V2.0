@@ -41,7 +41,10 @@ export default async function ProductPage({
       {fetchedProduct && (
         <div className="w-full">
           <div className="py-14 flex flex-col md:flex-row w-full justify-around items-start md:gap-10 mx-auto">
-            <ProductImagesSection images={fetchedProduct.images} />
+            <ProductImagesSection
+              productID={productID}
+              images={fetchedProduct.images}
+            />
             <ProductInfosSection
               title={fetchedProduct.title}
               reviewsMedian={fetchedProduct.reviewsMedian}

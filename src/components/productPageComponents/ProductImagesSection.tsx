@@ -1,9 +1,47 @@
 "use client";
+import { UserContext } from "@/contexts/userContext";
+import { isProductPurchased, isProductReviewed } from "@/serverActions/actions";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-export default function ProductImagesSection({ images }: { images: string[] }) {
+export default function ProductImagesSection({
+  images,
+  productID,
+}: {
+  images: string[];
+  productID: string;
+}) {
   const [highlightedImage, setHighlightedImage] = useState(images[0]);
+  const [purchased, setPurchased] = useState(false);
+  const [reviewed, setReviewed] = useState(false);
+  const context = useContext(UserContext);
+  useEffect(() => {
+    const isProductPurchasedAndDeliverd = async (productID: string) => {
+      const isPurchased = await isProductPurchased(productID);
+      if (isPurchased) {
+        setPurchased(true);
+      }
+    };
+
+    const isPrReviewed = async (productID: string) => {
+      const isReviewed = await isProductReviewed(productID);
+      if (isReviewed) {
+        setReviewed(true);
+      }
+    };
+
+    if (currentUser) {
+      // Check only when the currentUser is known
+      isProductPurchasedAndDeliverd(productID);
+      isPrReviewed(productID);
+    }
+  }, []);
+
+  if (!context) {
+    return <></>;
+  }
+
+  const { currentUser } = context;
 
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const url = new URL(e.currentTarget.currentSrc);
@@ -35,6 +73,16 @@ export default function ProductImagesSection({ images }: { images: string[] }) {
           width={1050}
           height={1050}
         />
+        {purchased && (
+          <p className="absolute right-0 top-4 bg-yellow-500 px-2 rotate-20 rounded-sm">
+            Purchased
+          </p>
+        )}
+        {reviewed && (
+          <p className="absolute left-0 top-4 bg-green-200 px-2 -rotate-20 rounded-sm">
+            Reviewed
+          </p>
+        )}
       </div>
 
       <div className="flex md:hidden flex-row gap-1 max-w-15">
