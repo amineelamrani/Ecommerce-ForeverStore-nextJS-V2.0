@@ -22,23 +22,9 @@ export default function Cart() {
   const { basketContent, currentUser, setBasketContent } = context;
 
   let cartContentItems = [
-    <h1
-      className="flex items-center gap-2 text-gray-600"
-      key="starting-cart-content-empty"
-    >
-      Loading Cart Items <LoaderCircle className="animate-spin" size={15} />
-    </h1>,
-    <div
-      key="second-items-starting-cart-content-empty"
-      className="flex items-center space-x-4 "
-    >
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>,
+    <h1 key="starting-cart-content-empty">Cart Is Empty...</h1>,
   ];
+
   let subTotal = 0;
   if (basketContent !== null) {
     for (let i = 0; i < basketContent.length; i++) {
@@ -107,7 +93,7 @@ export default function Cart() {
       <h1 className="mb-4 relative text-xl md:text-2xl font-bold after:content-[''] after:absolute after:top-1/2 after:w-8 md:after:w-14 after:h-[2px] after:bg-black">
         <span className="text-slate-500">YOUR</span> CART
       </h1>
-      <div>{cartContentItems}</div>
+      <div>{basketContent && cartContentItems}</div>
 
       {basketContent !== null && basketContent.length > 0 && (
         <div className="mt-15 w-full flex flex-col items-end ">
@@ -138,8 +124,7 @@ export default function Cart() {
           </div>
         </div>
       )}
-      {!basketContent ||
-        (basketContent.length === 0 && <h1>Cart Is Empty...</h1>)}
+      {!basketContent && <h1>Cart Is Empty...</h1>}
     </div>
   );
 }
