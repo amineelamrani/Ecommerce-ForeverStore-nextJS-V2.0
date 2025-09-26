@@ -1,6 +1,7 @@
 "use server";
 
 import { Product, Review } from "@/models/models";
+import { revalidateTag } from "next/cache";
 
 export const fetchProductReviews = async (productID: string | null) => {
   if (!productID) {
@@ -46,4 +47,8 @@ export const fetchRelatedProduct = async (
     status: "success",
     result: JSON.stringify(relatedProducts),
   };
+};
+
+export const revalidateTagTest = async () => {
+  revalidateTag("productData");
 };
