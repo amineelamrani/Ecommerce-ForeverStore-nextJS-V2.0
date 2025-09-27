@@ -95,6 +95,40 @@ export const isProductReviewed = async (productID: string) => {
   return false;
 };
 
+export const addReview = async (
+  productID: string,
+  reviewContent: string,
+  reviewRating: number
+) => {
+  try {
+    const userId = await getUserId();
+    if (!userId) {
+      return false;
+    }
+    const newReview = await Review.create({
+      owner: userId,
+      content: reviewContent,
+      rating: reviewRating,
+      product: productID,
+    });
+    if (!newReview) {
+      return false;
+    }
+    const product = await Product.findById(productID);
+    product.reviewsNumber++;
+    if (product.reviewsNumber === 1) {
+      product.reviewsMedian = reviewRating;
+    } else {
+      product.reviewsMedian = (product.reviewsMedian + reviewRating) / 2;
+    }
+
+    await product.save();
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
 export const revalidateTagTest = async () => {
   revalidateTag("productData");
 };
