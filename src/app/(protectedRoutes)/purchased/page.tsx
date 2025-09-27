@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UserContext } from "@/contexts/userContext";
-import { OrdersInterface } from "@/models/order";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";

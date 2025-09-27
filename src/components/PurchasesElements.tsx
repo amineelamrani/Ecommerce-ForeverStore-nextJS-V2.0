@@ -26,6 +26,7 @@ export default function PurchasesElements({
     };
 
     fetchOder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // /!\ Not in this MVP bro later
   // display the data regarding that order
