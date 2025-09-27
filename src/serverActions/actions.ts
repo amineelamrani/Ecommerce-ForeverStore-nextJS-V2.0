@@ -1,6 +1,6 @@
 "use server";
 
-import { Product, Review, User } from "@/models/models";
+import { Order, Product, Review, User } from "@/models/models";
 import { revalidateTag } from "next/cache";
 import { getUserId } from "./authActions";
 
@@ -127,6 +127,14 @@ export const addReview = async (
   } catch (err) {
     return false;
   }
+};
+
+export const getOrder = async (orderID: string) => {
+  const order = await Order.findById(orderID).populate("products.productID");
+  if (!order) {
+    return null;
+  }
+  return JSON.stringify(order);
 };
 
 export const revalidateTagTest = async () => {
