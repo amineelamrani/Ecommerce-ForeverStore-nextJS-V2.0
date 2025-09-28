@@ -3,11 +3,12 @@ import React from "react";
 import SearchField from "./SearchField";
 import CollectionSideBar from "./CollectionSideBar";
 import CollectionsResultDisplaySection from "./CollectionsResultDisplaySection";
+import { ProductsInterface } from "@/models/product";
 
 export default function ClientSideCollectionComponent({
   products,
 }: {
-  products: string;
+  products: ProductsInterface[] | null;
 }) {
   return (
     <>
