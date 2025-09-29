@@ -12,9 +12,11 @@ import {
 export default function CollectionsResultDisplaySection({
   sorting,
   setSorting,
+  searchCardsContent,
 }: {
   sorting: string;
   setSorting: (sorting: string) => void;
+  searchCardsContent: React.JSX.Element[];
 }) {
   return (
     <div className="w-full md:3/4 pl-5">
@@ -35,6 +37,9 @@ export default function CollectionsResultDisplaySection({
             </SelectGroup>
           </SelectContent>
         </Select>
+      </div>
+      <div className="w-full flex flex-wrap items-start">
+        {searchCardsContent}
       </div>
     </div>
   );

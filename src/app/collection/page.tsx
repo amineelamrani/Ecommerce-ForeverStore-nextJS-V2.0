@@ -14,15 +14,15 @@ const fetchProducts = unstable_cache(
       await dbConnect();
       const products = await Product.find();
       if (!products) {
-        return null;
+        return JSON.stringify(null);
       }
-      return products;
+      return JSON.stringify(products);
     } catch (err) {
       console.log(
         "Error while getting products in the /collection route : ",
         err
       );
-      return null;
+      return JSON.stringify(null);
     }
   },
   ["fetchAllProduct"],
@@ -34,11 +34,15 @@ const fetchProducts = unstable_cache(
 export default async function CollectionRoute() {
   // No need for searchParams in the url, I will display the search input by default
   // and then when typing it will be a real time change on the client side
-  const fetchedProducts: ProductsInterface[] | null = await fetchProducts();
+  const fetchedProducts: ProductsInterface[] | null = JSON.parse(
+    await fetchProducts()
+  );
 
   return (
     <div className="flex flex-col w-full py-5 items-center">
-      <ClientSideCollectionComponent products={fetchedProducts} />
+      {fetchedProducts !== null && (
+        <ClientSideCollectionComponent products={fetchedProducts} />
+      )}
     </div>
   );
 }
