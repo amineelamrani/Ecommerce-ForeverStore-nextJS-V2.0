@@ -10,13 +10,11 @@ import {
 } from "./ui/select";
 
 export default function CollectionsResultDisplaySection({
-  sorting,
   setSorting,
   searchCardsContent,
 }: {
-  sorting: string;
   setSorting: (sorting: string) => void;
-  searchCardsContent: React.JSX.Element[];
+  searchCardsContent: (React.JSX.Element | undefined)[];
 }) {
   return (
     <div className="w-full md:3/4 pl-5">

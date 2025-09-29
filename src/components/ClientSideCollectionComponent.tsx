@@ -4,7 +4,6 @@ import SearchField from "./SearchField";
 import CollectionSideBar from "./CollectionSideBar";
 import CollectionsResultDisplaySection from "./CollectionsResultDisplaySection";
 import { ProductsInterface } from "@/models/product";
-import LoadingSpinner from "./ui/LoadingSpinner";
 import CollectionSearchCard from "./CollectionSearchCard";
 
 export default function ClientSideCollectionComponent({
@@ -33,12 +32,7 @@ export default function ClientSideCollectionComponent({
   };
 
   let sortedProducts: ProductsInterface[] = [];
-  let searchCardsContent = [
-    <LoadingSpinner
-      key={"starting-loading-spinner-kdijfhejg"}
-      className="my-5 h-14 w-14 mx-auto"
-    />,
-  ];
+  let searchCardsContent: (React.JSX.Element | undefined)[] = [];
 
   function sortByPriceLowToHigh(items: ProductsInterface[]) {
     items.sort((a, b) => a.price - b.price);
@@ -70,57 +64,59 @@ export default function ClientSideCollectionComponent({
   }
 
   const { Topwear, Bottomwear, Winterwear } = types;
-  searchCardsContent = sortedProducts.map((product, index) => {
-    for (const [key, value] of Object.entries(categories)) {
-      if (value && product.category.includes(key)) {
-        // check the types now
-        if (Topwear && Bottomwear && Winterwear) {
-          return (
-            <CollectionSearchCard
-              title={product.title}
-              price={product.price}
-              image={product.images[0]}
-              key={`${product._id!.toString()}-${index}`}
-              id={product._id!.toString()}
-            />
-          );
-        } else if (!Topwear && !Bottomwear && !Winterwear) {
-          return (
-            <h1
-              className="text-xl text-red-500 italic my-1 mx-auto"
-              key={`${index}-empty`}
-            >
-              No Item Found!
-            </h1>
-          );
-        }
-
-        for (const [keyType, valueType] of Object.entries(types)) {
-          if (valueType && product.subCategory.includes(keyType)) {
+  if (!Topwear && !Bottomwear && !Winterwear) {
+    searchCardsContent = [
+      <h1
+        className="text-xl text-red-500 italic my-1 mx-auto"
+        key={`Empty-no-result-empty`}
+      >
+        No Item Found!
+      </h1>,
+    ];
+  } else {
+    searchCardsContent = sortedProducts.map((product, index) => {
+      for (const [key, value] of Object.entries(categories)) {
+        if (value && product.category.includes(key)) {
+          // check the types now
+          if (Topwear && Bottomwear && Winterwear) {
             return (
               <CollectionSearchCard
                 title={product.title}
                 price={product.price}
                 image={product.images[0]}
-                id={product._id!.toString()}
                 key={`${product._id!.toString()}-${index}`}
+                id={product._id!.toString()}
               />
             );
+          } else {
+            for (const [keyType, valueType] of Object.entries(types)) {
+              if (valueType && product.subCategory.includes(keyType)) {
+                return (
+                  <CollectionSearchCard
+                    title={product.title}
+                    price={product.price}
+                    image={product.images[0]}
+                    id={product._id!.toString()}
+                    key={`${product._id!.toString()}-${index}`}
+                  />
+                );
+              }
+            }
           }
         }
       }
-    }
-  });
+    });
 
-  if (searchCardsContent.filter((item) => item !== undefined).length === 0) {
-    searchCardsContent = [
-      <h1
-        className="text-xl text-red-500 italic my-1 mx-auto"
-        key={`not-found-empty`}
-      >
-        No Item Found!
-      </h1>,
-    ];
+    if (searchCardsContent.filter((item) => item !== undefined).length === 0) {
+      searchCardsContent = [
+        <h1
+          className="text-xl text-red-500 italic my-1 mx-auto"
+          key={`not-found-empty`}
+        >
+          No Item Found!
+        </h1>,
+      ];
+    }
   }
 
   return (
@@ -134,7 +130,6 @@ export default function ClientSideCollectionComponent({
           handleCheckboxTypeChange={handleCheckboxTypeChange}
         />
         <CollectionsResultDisplaySection
-          sorting={sorting}
           setSorting={setSorting}
           searchCardsContent={searchCardsContent}
         />
