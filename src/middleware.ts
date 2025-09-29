@@ -5,7 +5,11 @@ import { jwtVerify } from "jose";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname.startsWith("/purchased") || pathname.startsWith("/orders")) {
+  if (
+    pathname.startsWith("/purchased") ||
+    pathname.startsWith("/orders") ||
+    pathname.startsWith("/admin")
+  ) {
     const cookie = request.cookies.get("foreverEcommNext_2.0");
     const token = cookie?.value;
 

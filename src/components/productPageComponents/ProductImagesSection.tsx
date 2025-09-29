@@ -43,7 +43,6 @@ export default function ProductImagesSection({
     const isProductPurchasedAndDeliverd = async (productID: string) => {
       const isPurchased = await isProductPurchased(productID);
       if (isPurchased) {
-        console.log("purchased");
         setPurchased(true);
       }
     };
@@ -51,7 +50,6 @@ export default function ProductImagesSection({
     const isPrReviewed = async (productID: string) => {
       const isReviewed = await isProductReviewed(productID);
       if (isReviewed) {
-        console.log("reviewed");
         setReviewed(true);
       }
     };
