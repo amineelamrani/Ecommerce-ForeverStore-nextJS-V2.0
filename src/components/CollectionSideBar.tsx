@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 
-export default function CollectionSideBar() {
-  const [categories, setCategories] = useState({
-    Men: true,
-    Women: true,
-    Kids: true,
-  });
-  const [types, setTypes] = useState({
-    Topwear: true,
-    Bottomwear: true,
-    Winterwear: true,
-  });
-
-  const handleCheckboxCatChange = (checked: boolean | string, id: string) => {
-    setCategories({ ...categories, [id]: checked });
+interface ComponentPropsInterface {
+  categories: {
+    Men: boolean;
+    Women: boolean;
+    Kids: boolean;
   };
-  const handleCheckboxTypeChange = (checked: boolean | string, id: string) => {
-    setTypes({ ...types, [id]: checked });
+  types: {
+    Topwear: boolean;
+    Bottomwear: boolean;
+    Winterwear: boolean;
   };
 
+  handleCheckboxCatChange: (checked: boolean | string, id: string) => void;
+  handleCheckboxTypeChange: (checked: boolean | string, id: string) => void;
+}
+
+export default function CollectionSideBar({
+  categories,
+  types,
+  handleCheckboxCatChange,
+  handleCheckboxTypeChange,
+}: ComponentPropsInterface) {
   return (
     <div className="w-full md:w-1/4 pr-5">
       <h1 className="py-5 font-bold text-xl">FILTERS</h1>

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 
-export default function SearchField() {
-  const [searchValue, setSearchValue] = useState<string>("");
-
+export default function SearchField({
+  searchValue,
+  setSearchValue,
+}: {
+  searchValue: string;
+  setSearchValue: (searchValue: string) => void;
+}) {
   return (
     <div className="flex w-full max-w-sm items-center space-x-2">
       <Input

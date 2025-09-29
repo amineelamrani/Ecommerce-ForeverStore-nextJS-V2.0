@@ -9,9 +9,13 @@ import {
   SelectLabel,
 } from "./ui/select";
 
-export default function CollectionsResultDisplaySection() {
-  const [sorting, setSorting] = useState("relevant");
-
+export default function CollectionsResultDisplaySection({
+  sorting,
+  setSorting,
+}: {
+  sorting: string;
+  setSorting: (sorting: string) => void;
+}) {
   return (
     <div className="w-full md:3/4 pl-5">
       <div className="py-5 flex flex-col sm:flex-row justify-between items-end sm:items-center px-3">
