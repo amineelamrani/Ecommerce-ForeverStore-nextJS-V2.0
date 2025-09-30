@@ -200,9 +200,15 @@ export default function AddingProduct() {
               required
             />
             <ul className="flex gap-2 flex-wrap w-full ">
-              {inputData.images.map((item, index) => (
-                <img src={item} key={index} className="h-15" alt="" />
-              ))}
+              {inputData.images[0].length > 0 &&
+                inputData.images.map((item, index) => (
+                  <img
+                    src={item}
+                    key={`Image-display-admin-preview-${index}`}
+                    className="h-15"
+                    alt=""
+                  />
+                ))}
             </ul>
           </div>
         </div>
