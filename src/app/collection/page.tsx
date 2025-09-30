@@ -27,7 +27,7 @@ const fetchProducts = unstable_cache(
   },
   ["fetchAllProduct"],
   {
-    tags: ["fetchAllProduct"],
+    tags: ["fetchAllProduct", "homePageCollections"],
   }
 );
 
