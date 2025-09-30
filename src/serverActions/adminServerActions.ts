@@ -3,16 +3,39 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { cookies } from "next/headers";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { User } from "@/models/models";
+import { Product, User } from "@/models/models";
+import { inputDataInterface } from "@/components/adminComponents/AddingProduct";
+import { revalidateTag } from "next/cache";
 
-export const addProductServerAction = async (
-  initialState,
-  formData: FormData
-) => {
+export const addProductServerAction = async (data: inputDataInterface) => {
   //This will add the product
   // Trigger a revalidateTagf for the home page and /products to recompile
   if (await checkAdmin()) {
     // If admin -> Do your work
+    if (
+      !data.title ||
+      !data.description ||
+      !data.price ||
+      !data.sizes ||
+      !data.images ||
+      !data.category ||
+      !data.subCategory
+    ) {
+      return false;
+    }
+    const newProduct = await Product.create({
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      sizes: data.sizes,
+      images: data.images,
+      category: data.category,
+      subCategory: data.subCategory,
+    });
+    if (!newProduct) return false;
+    revalidateTag("productData");
+    revalidateTag("homePageCollections");
+    return true;
   }
 };
 

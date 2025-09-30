@@ -13,27 +13,41 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import { Toaster } from "../ui/sonner";
+import { toast } from "sonner";
 
-const initialState = {
+const initialStateInputData: inputDataInterface = {
   title: "",
   description: "",
-  price: "",
+  price: 0,
   sizes: ["S", "M", "L", "XL", "XXL"],
-  images: [],
-  category: [],
-  subCategory: [],
+  images: [""],
+  category: [""],
+  subCategory: [""],
 };
 
+export interface inputDataInterface {
+  title: string;
+  description: string;
+  price: number;
+  sizes: string[];
+  images: string[];
+  category: string[];
+  subCategory: string[];
+}
+
 export default function AddingProduct() {
-  const [state, formAction, loading] = useActionState(
-    addProductServerAction,
-    initialFormState
-  );
-  const [text, setText] = useState("");
-  const [inputData, setInputData] = useState({ ...initialState });
+  const [text, setText] = useState<string>("");
+  const [inputData, setInputData] = useState<inputDataInterface>({
+    ...initialStateInputData,
+  });
+  const [loading, setLoading] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
+      if (!text || text.length < 2) {
+        return;
+      }
       e.preventDefault();
 
       const newValue = text + "\n";
@@ -43,16 +57,44 @@ export default function AddingProduct() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setLoading(false);
     setText(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const callServer = await addProductServerAction(inputData);
+    if (callServer) {
+      setInputData({ ...initialStateInputData });
+      setText("");
+      setLoading(false);
+      toast.success("Product added to the store...", {
+        duration: 1500,
+      });
+    } else {
+      toast.error(
+        "An error happened while trying to store the new product...",
+        {
+          duration: 1000,
+        }
+      );
+    }
   };
 
   return (
     <div className="py-5 px-10">
+      <Toaster
+        position="top-right"
+        expand={true}
+        richColors
+        visibleToasts={1}
+      />
       <h1 className="text-lg text-blue-950 font-bold my-5">
         Add a Product to the store
       </h1>
       <form
-        action={formAction}
+        onSubmit={handleSubmit}
         className="flex flex-col gap-2 w-full max-w-115"
       >
         <div className="flex flex-col w-full gap-2">
