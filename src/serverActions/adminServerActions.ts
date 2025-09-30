@@ -3,7 +3,7 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { cookies } from "next/headers";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { Product, User } from "@/models/models";
+import { Order, Product, User } from "@/models/models";
 import { inputDataInterface } from "@/components/adminComponents/AddingProduct";
 import { revalidateTag } from "next/cache";
 
@@ -83,6 +83,31 @@ export const getAllProductAdmin = async () => {
     return JSON.stringify(null);
   }
   return JSON.stringify(null);
+};
+
+export const updateOrderStatus = async (
+  orderID: string,
+  statusDelivery: string
+) => {
+  if (await checkAdmin()) {
+    const updatedOrder = await Order.findById(orderID);
+    if (!updatedOrder) {
+      return;
+    }
+    if (
+      updatedOrder.payment.method === "cod" &&
+      updatedOrder.payment.status === "pending" &&
+      updatedOrder.statusDelivery === "Shipping" &&
+      statusDelivery === "Delivered"
+    ) {
+      updatedOrder.payment = { ...updatedOrder.payment, ["status"]: "payed" };
+    }
+    if (statusDelivery !== undefined) {
+      updatedOrder.statusDelivery = statusDelivery;
+    }
+    await updatedOrder.save();
+    return;
+  }
 };
 
 export const checkAdmin = async () => {
