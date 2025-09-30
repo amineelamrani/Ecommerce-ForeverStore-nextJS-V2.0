@@ -110,6 +110,29 @@ export const updateOrderStatus = async (
   }
 };
 
+export const getOrdersAdmin = async (currentPage: number) => {
+  if (await checkAdmin()) {
+    const limit = 10;
+    const skip = (currentPage - 1) * limit;
+    const orders = await Order.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    const totalOrders = await Order.countDocuments();
+    if (orders && totalOrders) {
+      return JSON.stringify({
+        page: currentPage,
+        totalPages: Math.ceil(totalOrders / limit),
+        totalOrders,
+        orders: orders,
+      });
+    }
+
+    return JSON.stringify(null);
+  }
+  return JSON.stringify(null);
+};
+
 export const checkAdmin = async () => {
   try {
     await dbConnect();
