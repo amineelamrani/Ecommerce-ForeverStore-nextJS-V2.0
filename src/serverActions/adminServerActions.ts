@@ -37,6 +37,52 @@ export const addProductServerAction = async (data: inputDataInterface) => {
     revalidateTag("homePageCollections");
     return true;
   }
+  return false;
+};
+
+export const deleteProductServerAction = async (productID: string) => {
+  if (await checkAdmin()) {
+    if (productID != "") {
+      const deletedProduct = await Product.findByIdAndDelete(productID);
+      if (!deletedProduct) return false;
+      return true;
+    }
+    return false;
+  }
+  return false;
+};
+
+export const updateProductServerAction = async (
+  productID: string,
+  title: string,
+  price: number
+) => {
+  if (await checkAdmin()) {
+    const updates: { title?: string; price?: number } = {};
+    if (title !== undefined) updates.title = title;
+    if (price !== undefined) updates.price = price;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productID,
+      { $set: updates },
+      { new: true }
+    );
+
+    if (!updatedProduct) return false;
+    return true;
+  }
+  return false;
+};
+
+export const getAllProductAdmin = async () => {
+  if (await checkAdmin()) {
+    const products = await Product.find();
+    if (products) {
+      return JSON.stringify(products);
+    }
+    return JSON.stringify(null);
+  }
+  return JSON.stringify(null);
 };
 
 export const checkAdmin = async () => {
