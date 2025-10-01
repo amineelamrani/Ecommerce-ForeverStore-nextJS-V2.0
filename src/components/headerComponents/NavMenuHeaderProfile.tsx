@@ -11,6 +11,7 @@ import {
 import { UserRound } from "lucide-react";
 import Link from "next/link";
 import { UserContext } from "@/contexts/userContext";
+import { signOut } from "@/serverActions/authActions";
 
 export default function NavMenuHeaderProfile() {
   const context = useContext(UserContext);
@@ -18,7 +19,18 @@ export default function NavMenuHeaderProfile() {
     console.log("there is an error while uploading context");
     return <></>;
   }
-  const { currentUser } = context;
+  const { currentUser, setCurrentUser, setBasketContent } = context;
+
+  const handleLogoutClick = async () => {
+    try {
+      await signOut();
+      setCurrentUser(null);
+      localStorage.removeItem("eCommerceForeverNextJS");
+      setBasketContent(null);
+    } catch (err) {
+      return;
+    }
+  };
 
   return (
     <NavigationMenu>
@@ -33,8 +45,8 @@ export default function NavMenuHeaderProfile() {
               <Link href="/purchased">Purchases</Link>
             </NavigationMenuLink>
             {currentUser && (
-              <NavigationMenuLink asChild>
-                <Link href="/">Logout</Link>
+              <NavigationMenuLink onClick={handleLogoutClick}>
+                Logout
               </NavigationMenuLink>
             )}
 

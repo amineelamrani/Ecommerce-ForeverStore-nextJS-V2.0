@@ -260,6 +260,15 @@ export const getUserId = async () => {
   return id;
 };
 
+export const signOut = async () => {
+  (await cookies()).set({
+    name: "foreverEcommNext_2.0",
+    value: "loggedout",
+    httpOnly: true,
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
+};
+
 export const handleForgotPasswordForm = async (
   initialState: InitialForgotPassInterface,
   formData: FormData
