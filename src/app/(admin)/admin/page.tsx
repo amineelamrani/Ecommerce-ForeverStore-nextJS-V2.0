@@ -1,5 +1,6 @@
 "use client";
 import AddingProduct from "@/components/adminComponents/AddingProduct";
+import RevalidateRoutes from "@/components/adminComponents/RevalidateRoutes";
 import ViewingOrders from "@/components/adminComponents/ViewingOrders";
 import ViewingProducts from "@/components/adminComponents/ViewingProducts";
 import { UserContext } from "@/contexts/userContext";
@@ -60,6 +61,15 @@ export default function AdminRoute() {
               >
                 Orders
               </li>
+              <li
+                onClick={handleSelectClick}
+                id="revalidate"
+                className={`rounded-l-sm border-t-2 border-l-2 border-b-2 p-2 hover:cursor-pointer hover:bg-gray-200 ${
+                  tabSelected === "revalidate" ? "bg-gray-200" : "bg-white"
+                }`}
+              >
+                Revalidate
+              </li>
             </ul>
           </div>
 
@@ -67,6 +77,7 @@ export default function AdminRoute() {
             {tabSelected === "adding" && <AddingProduct />}
             {tabSelected === "update" && <ViewingProducts />}
             {tabSelected === "orders" && <ViewingOrders />}
+            {tabSelected === "revalidate" && <RevalidateRoutes />}
           </div>
         </div>
       )}
