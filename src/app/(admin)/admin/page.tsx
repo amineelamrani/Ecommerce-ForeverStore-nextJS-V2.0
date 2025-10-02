@@ -13,7 +13,7 @@ export default function AdminRoute() {
   const [tabSelected, setTabSelected] = useState("adding"); //values : adding, update, orders
   useEffect(() => {
     if (context) {
-      if (!context.currentUser || !context.currentUser.admin) {
+      if (context.currentUser && !context.currentUser.admin) {
         router.push("/login");
       }
     }
