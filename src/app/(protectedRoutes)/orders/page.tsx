@@ -136,7 +136,7 @@ export default function Orders() {
     }, 500); // 100ms delay, adjust as needed
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDeliveryInformation({
       ...deliveryInformation,
       [e.target.name]: e.target.value,

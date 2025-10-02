@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 // This page would be purely client side (as there is a need for accessing localstorage ... and No need for the  SEO for this specific route)
 
@@ -124,7 +125,19 @@ export default function Cart() {
           </div>
         </div>
       )}
-      {!basketContent && <h1>Cart Is Empty...</h1>}
+      {!basketContent && (
+        <div className="flex flex-col gap-5">
+          <h1 className="text-2xl text-gray-600 ">Cart Is Empty...</h1>
+          <div
+            onClick={() => router.push("/collection")}
+            className=" w-fit rounded-md outline-2 outline-black py-2 px-3 shadow-[8px_8px] cursor-pointer transition-all duration-100 ease-out active:shadow-none active:translate-x-[8px] active:translate-y-[8px]"
+          >
+            <p className="text-sm text-gray-600 select-none">
+              Click here to continue shooping
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
