@@ -10,6 +10,12 @@ import { BadgeCheck, Headset, RefreshCcwDot } from "lucide-react";
 import HighlightItem from "@/components/HighlightItem";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title:
+    "HOME | FOREVER Store | The best store with the best quality price ration",
+};
 
 // Build the static version of the home page
 // it will be a Static generated page and it will rebuilt when the admin adds a new product

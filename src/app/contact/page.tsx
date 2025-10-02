@@ -1,5 +1,10 @@
 import Image from "next/image";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "CONTACT",
+};
 
 export default function Contact() {
   return (

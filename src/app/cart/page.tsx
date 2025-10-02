@@ -6,9 +6,6 @@ import { UserContext } from "@/contexts/userContext";
 import CartItemComponent from "@/components/cartComponents/CartItemComponent";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { LoaderCircle } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
 
 // This page would be purely client side (as there is a need for accessing localstorage ... and No need for the  SEO for this specific route)
 

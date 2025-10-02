@@ -4,6 +4,11 @@ import { Product } from "@/models/models";
 import { ProductsInterface } from "@/models/product";
 import { unstable_cache } from "next/cache";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Search...",
+};
 
 const fetchProducts = unstable_cache(
   async () => {

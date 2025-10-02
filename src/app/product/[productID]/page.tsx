@@ -7,6 +7,7 @@ import { Product } from "@/models/models";
 import { ProductsInterface } from "@/models/product";
 import { unstable_cache } from "next/cache";
 import React from "react";
+import type { Metadata } from "next";
 
 const fetchCachedProduct = unstable_cache(
   async (product_id) => {
@@ -24,6 +25,22 @@ const fetchCachedProduct = unstable_cache(
     tags: ["productData"],
   }
 );
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ productID: string }>;
+}): Promise<Metadata> {
+  const { productID } = await params;
+  await dbConnect();
+  const fetchedProduct: ProductsInterface | null = await fetchCachedProduct(
+    productID
+  );
+
+  return {
+    title: fetchedProduct ? fetchedProduct.title : "PRODUCT", // <title>{product.title}</title>
+  };
+}
 
 export default async function ProductPage({
   params,
