@@ -8,6 +8,7 @@ import {
   checkStripeSuccess,
   InitialOrderingInterface,
   orderServerAction,
+  removeOrderRoutine,
 } from "@/serverActions/stripeActions";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,17 @@ export default function Orders() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentStripeSuccess, setPaymentStripeSuccess] = useState(false);
   const [paymentCODSuccess, setPaymentCODSuccess] = useState(false);
+  const [deliveryInformation, setDeliveryInformation] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zipCode: 10,
+    country: "",
+    phone: 10,
+  });
   const [state, formAction, isLoading] = useActionState(
     orderServerAction,
     initialValue
@@ -45,6 +57,7 @@ export default function Orders() {
     const checkStripe = async () => {
       const params = new URLSearchParams(window.location.search);
       const success = params.get("success");
+      const canceled = params.get("canceled");
       const session_id = params.get("session_id");
       const order_id = params.get("order_id");
       if (success === "true" && session_id && order_id) {
@@ -54,6 +67,11 @@ export default function Orders() {
         ); // This function to check if paid really or not -> If yes then it do everything on the server whats need is only to empty localStorage and setBasketContent and call getCurrentUserServer from UserContext
         if (stripeTransactionChecking.status === "success") {
           setPaymentStripeSuccess(true);
+        }
+      } else if (canceled === "true" && order_id) {
+        const removingCanceledOrder = await removeOrderRoutine(order_id);
+        if (removingCanceledOrder) {
+          router.push("/cart");
         }
       }
     };
@@ -112,10 +130,18 @@ export default function Orders() {
     localStorage.removeItem("eCommerceForeverNextJS");
     setBasketContent(null);
     getCurrentUserServer();
+    // setPaymentCODSuccess(true);
     setTimeout(() => {
       router.push("/cart");
-    }, 200); // 100ms delay, adjust as needed
+    }, 500); // 100ms delay, adjust as needed
   }
+
+  const handleChange = (e) => {
+    setDeliveryInformation({
+      ...deliveryInformation,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   // Check if payment handled
   // If stripe => window.location.href = redirectingUrl
@@ -158,6 +184,8 @@ export default function Orders() {
             placeholder="First name"
             name="firstName"
             className="flex-1"
+            onChange={handleChange}
+            value={deliveryInformation.firstName}
             required
           />
           <Input
@@ -165,6 +193,8 @@ export default function Orders() {
             placeholder="Last name"
             className="flex-1"
             name="lastName"
+            onChange={handleChange}
+            value={deliveryInformation.lastName}
             required
           />
           <Input
@@ -172,6 +202,8 @@ export default function Orders() {
             placeholder="Email adress"
             className="w-full my-2"
             name="email"
+            onChange={handleChange}
+            value={deliveryInformation.email}
             required
           />
           <Input
@@ -179,6 +211,8 @@ export default function Orders() {
             placeholder="Street"
             className="w-full"
             name="street"
+            onChange={handleChange}
+            value={deliveryInformation.street}
             required
           />
           <Input
@@ -186,6 +220,8 @@ export default function Orders() {
             placeholder="City"
             className="flex-1 my-2"
             name="city"
+            onChange={handleChange}
+            value={deliveryInformation.street}
             required
           />
           <Input
@@ -193,6 +229,8 @@ export default function Orders() {
             placeholder="State"
             className="flex-1 my-2"
             name="state"
+            onChange={handleChange}
+            value={deliveryInformation.state}
             required
           />
           <div className="w-full h-0"></div>
@@ -201,6 +239,8 @@ export default function Orders() {
             placeholder="Zipcode"
             className="flex-1"
             name="zipCode"
+            onChange={handleChange}
+            value={deliveryInformation.zipCode}
             min={10}
             required
           />
@@ -209,6 +249,8 @@ export default function Orders() {
             placeholder="Country"
             className="flex-1"
             name="country"
+            onChange={handleChange}
+            value={deliveryInformation.country}
             required
           />
           <Input
@@ -216,6 +258,8 @@ export default function Orders() {
             placeholder="Phone"
             className="w-full my-2"
             name="phone"
+            onChange={handleChange}
+            value={deliveryInformation.phone}
             min={10}
             required
           />

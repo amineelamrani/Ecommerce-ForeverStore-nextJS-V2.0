@@ -189,7 +189,9 @@ export const orderServerAction = async (
         success_url: `${
           process.env.REDIRECTING_URL
         }?success=true&session_id={CHECKOUT_SESSION_ID}&order_id=${newOrder._id.toString()}`,
-        cancel_url: `${process.env.REDIRECTING_URL}?canceled=true`,
+        cancel_url: `${
+          process.env.REDIRECTING_URL
+        }?canceled=true&order_id=${newOrder._id.toString()}`,
       });
 
       return {
@@ -384,7 +386,7 @@ export const checkStripeSuccess = async (
   }
 };
 
-const removeOrderRoutine = async (order_id: string) => {
+export const removeOrderRoutine = async (order_id: string) => {
   // This is the process that will be made when a stripe order is not paid successfully
   // fetch for the order
   // Get the product IDs -> For each product will decrement ordersNumber--
