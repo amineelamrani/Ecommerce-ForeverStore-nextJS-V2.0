@@ -17,7 +17,7 @@ This project is created using next
   - Purchases
   - stripe integration
   - login
-  - sign-up (and account confirmation -> Goal do it with a mail provider not your personal account)
+  - sign-up
   - forgot-password (and reset)
   - admin (admin panel to add product, view products and see and update orders status)
 
