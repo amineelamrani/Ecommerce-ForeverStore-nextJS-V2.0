@@ -87,7 +87,7 @@ export const signUpServerAction = async (
 
   if (newUser) {
     //User created successfully but not validated, not to be validated by confirmation mail
-    sendMailConfirmation(
+    await sendMailConfirmation(
       rawFormData.email.toString(),
       rawFormData.name.toString(),
       uniqueString
@@ -303,7 +303,7 @@ export const handleForgotPasswordForm = async (
   user.confirmPassword = user.password;
   await user.save();
 
-  sendResetMail(email.toString(), resetToken);
+  await sendResetMail(email.toString(), resetToken);
   return {
     error: {
       error: false,
